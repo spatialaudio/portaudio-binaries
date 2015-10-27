@@ -11,6 +11,11 @@ The DLLs include all available host APIs, namely WMME, DirectSound, WDM/KS,
 WASAPI and ASIO.  For more informaton about the ASIO SDK see
 http://www.steinberg.net/en/company/developers.html.
 
+The DLLs were created on a Debian GNU/Linux system using [MXE](http://mxe.cc/)
+([this version](https://github.com/mxe/mxe/tree/98a5771690279ebe89ac1b5134f02d4864cefa6b))
+with the following commands (after installing the
+[dependencies](http://mxe.cc/#requirements)):
+
     JOBS=8
     git clone https://github.com/mxe/mxe.git
     curl -O http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip
@@ -46,6 +51,9 @@ https://github.com/adfernandes/precompiled-portaudio-windows.
 
 dylib for Mac OS X (64-bit)
 ---------------------------
+
+The dylib was created on a Mac OS X system using the following commands
+(after installing the necessary programs like make, GCC, ...):
 
     JOBS=8
     curl -O http://www.portaudio.com/archives/pa_stable_v19_20140130.tgz
