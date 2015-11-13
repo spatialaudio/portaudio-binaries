@@ -46,6 +46,11 @@ After saving your changes, please continue:
     mv libportaudio-x86_64-w64-mingw32.static.dll libportaudio64bit.dll
     mv libportaudio-i686-w64-mingw32.static.dll libportaudio32bit.dll
 
+The files `libportaudio*-debug.dll` were created with the same procedure, but
+extending the above `make` command:
+
+    make -C mxe portaudio -j$JOBS JOBS=$JOBS MXE_TARGETS=$TARGET PA_ENABLE_DEBUG_OUTPUT=1 PA_LOG_API_CALLS=1
+
 A different set of DLLs (compiled with Visual Studio) is available at
 https://github.com/adfernandes/precompiled-portaudio-windows.
 
