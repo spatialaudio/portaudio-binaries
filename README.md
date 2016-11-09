@@ -12,13 +12,12 @@ WASAPI and ASIO.  For more informaton about the ASIO SDK see
 http://www.steinberg.net/en/company/developers.html.
 
 The DLLs were created on a Debian GNU/Linux system using [MXE](http://mxe.cc/)
-([this version](https://github.com/mxe/mxe/tree/98a5771690279ebe89ac1b5134f02d4864cefa6b), using `pa_stable_v19_20140130.tgz`)
+([this version](https://github.com/mxe/mxe/tree/87b08fae68f5e45263d1bb71e8061700d86e3c8c), using `pa_stable_v190600_20161030.tgz`)
 with the following commands (after installing the
 [dependencies](http://mxe.cc/#requirements)):
 
-    JOBS=8
     git clone https://github.com/mxe/mxe.git
-    curl -O http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip
+    wget http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip
     export PATH=$(pwd)"/mxe/usr/bin:$PATH"
 
 Open the file `mxe/src/portaudio.mk` and change
@@ -35,7 +34,7 @@ After saving your changes, please continue:
         # You'll need write access in /usr/local for this:
         mv ASIOSDK2.3 /usr/local/asiosdk2
         # If it doesn't work, prepend "sudo " to the previous command
-        make -C mxe portaudio -j$JOBS JOBS=$JOBS MXE_TARGETS=$TARGET
+        make -C mxe portaudio MXE_TARGETS=$TARGET
         $TARGET-gcc -O2 -shared -o libportaudio-$TARGET.dll -Wl,--whole-archive -lportaudio -Wl,--no-whole-archive -lstdc++ -lwinmm -lole32 -lsetupapi
         $TARGET-strip libportaudio-$TARGET.dll
         chmod -x libportaudio-$TARGET.dll
@@ -52,16 +51,19 @@ https://github.com/adfernandes/precompiled-portaudio-windows.
 dylib for Mac OS X (64-bit)
 ---------------------------
 
-The dylib was created on a Mac OS X system using the following commands
-(after installing the necessary programs like make, GCC, ...):
+The dylib was created on a Mac OS X system using XCode.
+The XCode CLI tools were installed with:
 
-    JOBS=8
-    curl -O http://www.portaudio.com/archives/pa_stable_v19_20140130.tgz
-    tar xvf pa_stable_v19_20140130.tgz
+    xcode-select --install
+
+The following commands were used for compilation:
+
+    curl -O http://www.portaudio.com/archives/pa_stable_v190600_20161030.tgz
+    tar xvf pa_stable_v190600_20161030.tgz
     cd portaudio
     # in configure: replace "-Werror" (just search for it) with "-DNDEBUG"
-    ./configure --disable-mac-universal
-    make -j$JOBS
+    ./configure --disable-mac-universal MACOSX_DEPLOYMENT_TARGET=10.6
+    make
     cd ..
     cp portaudio/lib/.libs/libportaudio.2.dylib libportaudio.dylib
 
