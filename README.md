@@ -58,8 +58,8 @@ The XCode CLI tools were installed with:
 
 The following commands were used for compilation:
 
-    curl -O http://www.portaudio.com/archives/pa_stable_v190600_20161030.tgz
-    tar xvf pa_stable_v190600_20161030.tgz
+    curl -O http://files.portaudio.com/archives/pa_stable_v190700_20210406.tgz
+    tar xvf pa_stable_v190700_20210406.tgz
     cd portaudio
     # in configure: replace "-Werror" (just search for it) with "-DNDEBUG"
     ./configure --disable-mac-universal MACOSX_DEPLOYMENT_TARGET=10.6
