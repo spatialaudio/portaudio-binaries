@@ -67,7 +67,7 @@ The following commands were used for compilation:
     tar xvf pa_stable_v190700_20210406.tgz
     cd portaudio
     # in configure: replace "-Werror" (just search for it) with "-DNDEBUG"
-    ./configure --disable-mac-universal MACOSX_DEPLOYMENT_TARGET=10.6
+    ./configure MACOSX_DEPLOYMENT_TARGET=10.6
     make
     cd ..
     cp portaudio/lib/.libs/libportaudio.2.dylib libportaudio.dylib
