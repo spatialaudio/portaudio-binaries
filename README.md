@@ -12,16 +12,12 @@ WASAPI and ASIO.  For more informaton about the ASIO SDK see
 http://www.steinberg.net/en/company/developers.html.
 
 The DLLs were created on a Debian GNU/Linux system using [MXE](http://mxe.cc/)
-([this version](https://github.com/mxe/mxe/tree/6d90c4ce068be5312d762f1a5e6a64d610e0e8ca)
-from [PR #2631](https://github.com/mxe/mxe/pull/2631), using `pa_stable_v190700_20210406.tgz`)
+([this version](https://github.com/mxe/mxe/tree/95649828bc29334d5f9abef2718d49a55d9a5407),
+using `pa_stable_v190700_20210406.tgz`)
 with the following commands (after installing the
 [dependencies](http://mxe.cc/#requirements)):
 
     git clone https://github.com/mxe/mxe.git
-    cd mxe
-    git fetch origin pull/2631/head:pa-19.7.0
-    git checkout pa-19.7.0
-    cd ..
     wget http://www.steinberg.net/sdk_downloads/asiosdk2.3.zip
     export PATH=$(pwd)"/mxe/usr/bin:$PATH"
 
