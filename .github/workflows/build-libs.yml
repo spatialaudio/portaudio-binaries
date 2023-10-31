@@ -8,7 +8,7 @@ jobs:
       - name: Install dependencies
         run: |
           yum install -y \
-            jack-audio-connection-kit \
+            jack-audio-connection-kit-devel \
             #
       - name: checkout portaudio
         # NB: v4 doesn't seem to work with the manylinux2014 image:
