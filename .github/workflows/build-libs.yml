@@ -8,6 +8,7 @@ jobs:
       - name: Install dependencies
         run: |
           yum install -y \
+            alsa-lib-devel \
             jack-audio-connection-kit-devel \
             #
       - name: checkout portaudio
