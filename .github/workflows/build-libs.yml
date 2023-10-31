@@ -5,7 +5,13 @@ jobs:
     runs-on: ubuntu-latest
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
+      - name: Install dependencies
+        run: |
+          yum install -y \
+            jack-audio-connection-kit \
+            #
       - name: checkout portaudio
+        # NB: v4 doesn't seem to work with the manylinux2014 image:
         uses: actions/checkout@v3
         with:
           repository: PortAudio/portaudio
