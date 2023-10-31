@@ -6,7 +6,7 @@ jobs:
     container: quay.io/pypa/manylinux2014_x86_64
     steps:
       - name: checkout portaudio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v3
         with:
           repository: PortAudio/portaudio
           ref: v19.7.0
