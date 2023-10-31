@@ -1,10 +1,9 @@
 name: Build ASDF lib and run tests
-# TODO: only pull_request?
 on: [push]
 jobs:
-  windows:
-    runs-on: windows-2022
-    # TODO: matrix with x64 and Win32
+  linux:
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
     steps:
       - name: checkout portaudio
         uses: actions/checkout@v4
@@ -12,32 +11,14 @@ jobs:
           repository: PortAudio/portaudio
           ref: v19.7.0
           path: portaudio
-      # see https://github.com/PortAudio/portaudio/pull/552:
-      - name: cherry-pick MinGW fix
-        working-directory: portaudio
-        run: |
-          git fetch origin c6178e8592d936e246177a8991b75c9a043ccd00
-          git cherry-pick c6178e8592d936e246177a8991b75c9a043ccd00 --no-commit
-      # The next portaudio release will have an auto-download feature:
-      - name: download and extract ASIO SDK
-        run: |
-          curl -L -o asiosdk.zip https://www.steinberg.net/asiosdk
-          7z x asiosdk.zip
       - name: cmake configure
         run: |
-          cmake -S portaudio -B build -A x64 -D PA_USE_ASIO=ON
+          cmake -S portaudio -B build
       - name: cmake build
         run: |
-          cmake --build build --config Release
-      - name: rename DLL
-        run: |
-          mv build/Release/portaudio_x64.dll libportaudio64bit.dll
-      - name: upload DLL
+          cmake --build build
+      - name: upload build
         uses: actions/upload-artifact@v3
         with:
-          name: windows-x64-dll
-          path: libportaudio*.dll
-
-# TODO: macOS universal dylib
-
-# TODO: commit and push DLLs and dylib
+          name: manylinux-build
+          path: build/*
