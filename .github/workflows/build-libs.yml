@@ -41,9 +41,12 @@ jobs:
 
   windows:
     runs-on: windows-2022
+    strategy:
+      matrix:
+        use-asio: ["OFF", "ON"]
     # TODO: matrix with x64 and Win32
-    # TODO: with and without ASIO
     env:
+      ASIO_SUFFIX: "${{ matrix.use-asio == 'ON' && '-asio' || '' }}"
       # Reproducible build by avoiding time stamp
       LDFLAGS: "/Brepro"
     steps:
@@ -55,26 +58,27 @@ jobs:
           path: portaudio
       # The next portaudio release will have an auto-download feature:
       - name: download and extract ASIO SDK
+        if: matrix.use-asio == ON
         run: |
           curl -L -o asiosdk.zip https://www.steinberg.net/asiosdk
           7z x asiosdk.zip
       - name: cmake configure
         run: |
-          cmake -S portaudio -B build -A x64 -D PA_USE_ASIO=ON
+          cmake -S portaudio -B build -A x64 -D PA_USE_ASIO=${{ matrix.use-asio }}
       - name: cmake build
         run: |
           cmake --build build --config Release
       - name: rename DLL
         run: |
-          mv build/Release/portaudio_x64.dll libportaudio64bit.dll
+          mv build/Release/portaudio_x64.dll libportaudio64bit$ASIO_SUFFIX.dll
       - name: show some information about DLL
         run: |
-          ldd libportaudio64bit.dll
+          ldd libportaudio64bit$ASIO_SUFFIX.dll
       - name: upload DLL
         uses: actions/upload-artifact@v3
         with:
-          name: windows-x64-dll
-          path: libportaudio*.dll
+          name: windows-x64-dll$ASIO_SUFFIX
+          path: libportaudio64bit$ASIO_SUFFIX.dll
 
   push:
     runs-on: ubuntu-latest
@@ -90,6 +94,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: windows-x64-dll
+      - name: Retrieve x64 DLL with ASIO support
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-x64-dll-asio
       - name: Commit and push binaries (if there are changes)
         run: |
           git config --global user.name 'github-actions[bot]'
