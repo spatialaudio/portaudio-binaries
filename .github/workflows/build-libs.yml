@@ -44,6 +44,7 @@ jobs:
     strategy:
       matrix:
         asio-suffix: ["", "-asio"]
+        platform: [x64, Win32]
         include:
           - platform: x64
             platform-suffix: 64bit
@@ -73,6 +74,7 @@ jobs:
           cmake --build build --config Release
       - name: rename DLL
         run: |
+          ls build/Release
           mv build/Release/portaudio_${{ matrix.platform }}.dll libportaudio${{ matrix.platform-suffix }}${{ matrix.asio-suffix }}.dll
       - name: show some information about DLL
         run: |
