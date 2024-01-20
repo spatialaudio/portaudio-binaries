@@ -84,6 +84,35 @@ jobs:
           name: windows-${{ matrix.platform }}-dll${{ matrix.asio }}
           path: libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
 
+  linux:
+    runs-on: ubuntu-latest
+    container: quay.io/pypa/manylinux2014_x86_64
+    steps:
+      - name: Install dependencies
+        run: |
+          yum install -y \
+            alsa-lib-devel \
+            jack-audio-connection-kit-devel \
+            #
+      - name: checkout portaudio
+        # NB: v4 doesn't seem to work with the manylinux2014 image:
+        uses: actions/checkout@v3
+        with:
+          repository: PortAudio/portaudio
+          ref: v19.7.0
+          path: portaudio
+      - name: cmake configure
+        run: |
+          cmake -S portaudio -B build -D CMAKE_BUILD_TYPE=Release
+      - name: cmake build
+        run: |
+          cmake --build build
+      - name: upload build
+        uses: actions/upload-artifact@v3
+        with:
+          name: manylinux-build
+          path: build/*
+
   push:
     runs-on: ubuntu-latest
     needs: [macos, windows]
