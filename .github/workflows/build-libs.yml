@@ -44,7 +44,11 @@ jobs:
     strategy:
       matrix:
         asio-suffix: ["", "-asio"]
-    # TODO: matrix with x64 and Win32
+        include:
+          - platform: x64
+            platform-suffix: 64bit
+          - platform: Win32
+            platform-suffix: 32bit
     env:
       # Reproducible build by avoiding time stamp
       LDFLAGS: "/Brepro"
@@ -63,21 +67,21 @@ jobs:
           7z x asiosdk.zip
       - name: cmake configure
         run: |
-          cmake -S portaudio -B build -A x64 -D PA_USE_ASIO=${{ matrix.asio-suffix && 'ON' || 'OFF' }}
+          cmake -S portaudio -B build -A ${{ matrix.platform }} -D PA_USE_ASIO=${{ matrix.asio-suffix && 'ON' || 'OFF' }}
       - name: cmake build
         run: |
           cmake --build build --config Release
       - name: rename DLL
         run: |
-          mv build/Release/portaudio_x64.dll libportaudio64bit${{ matrix.asio-suffix }}.dll
+          mv build/Release/portaudio_${{ matrix.platform }}.dll libportaudio${{ matrix.platform-suffix }}${{ matrix.asio-suffix }}.dll
       - name: show some information about DLL
         run: |
-          ldd libportaudio64bit${{ matrix.asio-suffix }}.dll
+          ldd libportaudio${{ matrix.platform-suffix }}${{ matrix.asio-suffix }}.dll
       - name: upload DLL
         uses: actions/upload-artifact@v3
         with:
-          name: windows-x64-dll${{ matrix.asio-suffix }}
-          path: libportaudio64bit${{ matrix.asio-suffix }}.dll
+          name: windows-${{ matrix.platform }}-dll${{ matrix.asio-suffix }}
+          path: libportaudio${{ matrix.platform-suffix }}${{ matrix.asio-suffix }}.dll
 
   push:
     runs-on: ubuntu-latest
@@ -97,6 +101,14 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: windows-x64-dll-asio
+      - name: Retrieve Win32 DLL
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-Win32-dll
+      - name: Retrieve Win32 DLL with ASIO support
+        uses: actions/download-artifact@v3
+        with:
+          name: windows-Win32-dll-asio
       - name: Commit and push binaries (if there are changes)
         run: |
           git config --global user.name 'github-actions[bot]'
