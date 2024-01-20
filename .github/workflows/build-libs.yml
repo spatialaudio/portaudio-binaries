@@ -43,8 +43,8 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        asio-suffix: ["", "-asio"]
         platform: [x64, Win32]
+        asio: ["", "-asio"]
         include:
           - platform: x64
             platform-suffix: 64bit
@@ -62,28 +62,27 @@ jobs:
           path: portaudio
       # The next portaudio release will have an auto-download feature:
       - name: download and extract ASIO SDK
-        if: matrix.asio-suffix
+        if: matrix.asio
         run: |
           curl -L -o asiosdk.zip https://www.steinberg.net/asiosdk
           7z x asiosdk.zip
       - name: cmake configure
         run: |
-          cmake -S portaudio -B build -A ${{ matrix.platform }} -D PA_USE_ASIO=${{ matrix.asio-suffix && 'ON' || 'OFF' }}
+          cmake -S portaudio -B build -A ${{ matrix.platform }} -D PA_USE_ASIO=${{ matrix.asio && 'ON' || 'OFF' }}
       - name: cmake build
         run: |
           cmake --build build --config Release
       - name: rename DLL
         run: |
-          ls build/Release
-          mv build/Release/portaudio_${{ matrix.platform }}.dll libportaudio${{ matrix.platform-suffix }}${{ matrix.asio-suffix }}.dll
+          mv build/Release/portaudio_*.dll libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
       - name: show some information about DLL
         run: |
-          ldd libportaudio${{ matrix.platform-suffix }}${{ matrix.asio-suffix }}.dll
+          ldd libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
       - name: upload DLL
         uses: actions/upload-artifact@v3
         with:
-          name: windows-${{ matrix.platform }}-dll${{ matrix.asio-suffix }}
-          path: libportaudio${{ matrix.platform-suffix }}${{ matrix.asio-suffix }}.dll
+          name: windows-${{ matrix.platform }}-dll${{ matrix.asio }}
+          path: libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
 
   push:
     runs-on: ubuntu-latest
