@@ -107,15 +107,21 @@ jobs:
       - name: cmake build
         run: |
           cmake --build build
+      - name: move .so file
+        run: |
+          mv build/libportaudio.so .
+      - name: show some information about the .so file
+        run: |
+          ldd libportaudio.so
       - name: upload build
         uses: actions/upload-artifact@v3
         with:
-          name: manylinux-build
-          path: build/*
+          name: linux-so
+          path: libportaudio.so
 
   push:
     runs-on: ubuntu-latest
-    needs: [macos, windows]
+    needs: [macos, windows, linux]
     steps:
       - name: Clone Git repository
         uses: actions/checkout@v4
@@ -139,6 +145,10 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: windows-Win32-dll-asio
+      - name: Retrieve .so file
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-so
       - name: Commit and push binaries (if there are changes)
         run: |
           git config --global user.name 'github-actions[bot]'
