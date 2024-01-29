@@ -14,9 +14,6 @@ and another one (`*-asio.dll`) where ASIO is enabled as well.
 For more information about the ASIO SDK see
 http://www.steinberg.net/en/company/developers.html.
 
-A different set of DLLs (compiled with Visual Studio) is available at
-https://github.com/adfernandes/precompiled-portaudio-windows.
-
 dylib for macOS (64-bit, "universal")
 ----------------------------------------
 
