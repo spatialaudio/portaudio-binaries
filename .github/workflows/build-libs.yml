@@ -90,10 +90,7 @@ jobs:
     steps:
       - name: Install dependencies
         run: |
-          yum install -y \
-            alsa-lib-devel \
-            jack-audio-connection-kit-devel \
-            #
+          yum install -y alsa-lib-devel
       - name: checkout portaudio
         # NB: v4 doesn't seem to work with the manylinux2014 image:
         uses: actions/checkout@v3
@@ -103,21 +100,21 @@ jobs:
           path: portaudio
       - name: cmake configure
         run: |
-          cmake -S portaudio -B build -D CMAKE_BUILD_TYPE=Release
+          cmake -S portaudio -B build -D CMAKE_BUILD_TYPE=Release -D PA_USE_JACK=OFF
       - name: cmake build
         run: |
           cmake --build build
       - name: move .so file
         run: |
-          mv build/libportaudio.so .
+          mv build/libportaudio.so libportaudio-x86_64.so
       - name: show some information about the .so file
         run: |
-          ldd libportaudio.so
-      - name: upload build
+          ldd libportaudio-x86_64.so
+      - name: upload .so file
         uses: actions/upload-artifact@v3
         with:
           name: linux-so
-          path: libportaudio.so
+          path: libportaudio-x86_64.so
 
   push:
     runs-on: ubuntu-latest
