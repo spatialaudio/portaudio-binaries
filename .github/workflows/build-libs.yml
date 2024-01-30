@@ -34,7 +34,7 @@ jobs:
           file libportaudio.dylib
           otool -L libportaudio.dylib
       - name: upload dylib
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: macos-dylib
           path: libportaudio.dylib
@@ -79,7 +79,7 @@ jobs:
         run: |
           ldd libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
       - name: upload DLL
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: windows-${{ matrix.platform }}-dll${{ matrix.asio }}
           path: libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
@@ -91,23 +91,23 @@ jobs:
       - name: Clone Git repository
         uses: actions/checkout@v4
       - name: Retrieve dylib
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: macos-dylib
       - name: Retrieve x64 DLL
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: windows-x64-dll
       - name: Retrieve x64 DLL with ASIO support
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: windows-x64-dll-asio
       - name: Retrieve Win32 DLL
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: windows-Win32-dll
       - name: Retrieve Win32 DLL with ASIO support
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: windows-Win32-dll-asio
       - name: Commit and push binaries (if there are changes)
