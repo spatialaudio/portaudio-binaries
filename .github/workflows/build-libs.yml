@@ -86,35 +86,36 @@ jobs:
 
   linux:
     runs-on: ubuntu-latest
-    container: quay.io/pypa/manylinux2014_x86_64
+    strategy:
+      matrix:
+        arch: [x86_64, i686, aarch64]
     steps:
-      - name: Install dependencies
-        run: |
-          yum install -y alsa-lib-devel
+      - name: checkout main repo
+        uses: actions/checkout@v4
       - name: checkout portaudio
-        # NB: v4 doesn't seem to work with the manylinux2014 image:
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           repository: PortAudio/portaudio
           ref: v19.7.0
           path: portaudio
-      - name: cmake configure
+      - name: Set up QEMU
+        if: matrix.arch == 'aarch64'
+        uses: docker/setup-qemu-action@v3
+        with:
+          platforms: arm64
+      - name: Build PortAudio in Docker
         run: |
-          cmake -S portaudio -B build -D CMAKE_BUILD_TYPE=Release -D PA_USE_JACK=OFF
-      - name: cmake build
+          docker run --rm -v ${{ github.workspace }}:/workdir:rw --workdir=/workdir \
+            quay.io/pypa/manylinux2014_${{ matrix.arch }} \
+            ./build-linux.sh
+      - name: copy .so file
         run: |
-          cmake --build build
-      - name: move .so file
-        run: |
-          mv build/libportaudio.so libportaudio-x86_64.so
-      - name: show some information about the .so file
-        run: |
-          ldd libportaudio-x86_64.so
+          cp build/libportaudio.so libportaudio-${{ matrix.arch }}.so
       - name: upload .so file
         uses: actions/upload-artifact@v3
         with:
-          name: linux-so
-          path: libportaudio-x86_64.so
+          name: linux-${{ matrix.arch }}
+          path: libportaudio-${{ matrix.arch }}.so
 
   push:
     runs-on: ubuntu-latest
@@ -142,10 +143,18 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: windows-Win32-dll-asio
-      - name: Retrieve .so file
+      - name: Retrieve x86_64 .so file
         uses: actions/download-artifact@v3
         with:
-          name: linux-so
+          name: linux-x86_64
+      - name: Retrieve i686 .so file
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-i686
+      - name: Retrieve aarch64 .so file
+        uses: actions/download-artifact@v3
+        with:
+          name: linux-aarch64
       - name: Commit and push binaries (if there are changes)
         run: |
           git config --global user.name 'github-actions[bot]'
