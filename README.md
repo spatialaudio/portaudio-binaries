@@ -9,7 +9,7 @@ DLLs for Windows (32-bit and 64-bit)
 
 There are two sets of DLL files,
 one including the default host APIs,
-namely WMME, DirectSound, WDM/KS and WASAPI,
+namely MME, DirectSound, WDM/KS and WASAPI,
 and another one (`*-asio.dll`) where ASIO is enabled as well.
 For more information about the ASIO SDK see
 http://www.steinberg.net/en/company/developers.html.
