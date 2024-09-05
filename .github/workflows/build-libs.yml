@@ -21,7 +21,7 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: PortAudio/portaudio
-          ref: v19.7.0
+          ref: master
           path: portaudio
       - name: cmake configure
         run: |
@@ -64,14 +64,8 @@ jobs:
         uses: actions/checkout@v5
         with:
           repository: PortAudio/portaudio
-          ref: v19.7.0
+          ref: master
           path: portaudio
-      # The next portaudio release will have an auto-download feature:
-      - name: download and extract ASIO SDK
-        if: matrix.asio
-        run: |
-          curl -L -o asiosdk.zip https://www.steinberg.net/asiosdk
-          7z x asiosdk.zip
       - name: cmake configure
         run: |
           cmake -S portaudio -B build -A ${{ matrix.platform }} -D PA_USE_ASIO=${{ matrix.asio && 'ON' || 'OFF' }}
