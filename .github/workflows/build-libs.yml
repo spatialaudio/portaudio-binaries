@@ -15,7 +15,7 @@ jobs:
       MACOSX_DEPLOYMENT_TARGET: "10.9"
     steps:
       - name: checkout portaudio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: PortAudio/portaudio
           ref: v19.7.0
@@ -55,7 +55,7 @@ jobs:
       LDFLAGS: "/Brepro"
     steps:
       - name: checkout portaudio
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           repository: PortAudio/portaudio
           ref: v19.7.0
@@ -89,7 +89,7 @@ jobs:
     needs: [macos, windows]
     steps:
       - name: Clone Git repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
       - name: Retrieve dylib
         uses: actions/download-artifact@v4
         with:
