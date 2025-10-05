@@ -6,6 +6,9 @@ on:
 permissions:
   # This is needed for pushing a new commit to the repo:
   contents: write
+env:
+  CMAKE_POLICY_VERSION_MINIMUM: "3.5"
+
 jobs:
 
   macos:
