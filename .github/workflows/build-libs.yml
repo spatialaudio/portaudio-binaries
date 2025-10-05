@@ -25,13 +25,13 @@ jobs:
           path: portaudio
       - name: cmake configure
         run: |
-          cmake -S portaudio -B build -D CMAKE_BUILD_TYPE=Release
+          cmake -S portaudio -B build -D CMAKE_BUILD_TYPE=Release -D PA_BUILD_SHARED_LIBS=ON
       - name: cmake build
         run: |
           cmake --build build
       - name: move dylib
         run: |
-          mv build/libportaudio.dylib .
+          mv build/libportaudio.19.8.dylib libportaudio.dylib
       - name: show some information about dylib
         run: |
           file libportaudio.dylib
@@ -68,13 +68,13 @@ jobs:
           path: portaudio
       - name: cmake configure
         run: |
-          cmake -S portaudio -B build -A ${{ matrix.platform }} -D PA_USE_ASIO=${{ matrix.asio && 'ON' || 'OFF' }}
+          cmake -S portaudio -B build -A ${{ matrix.platform }} -D PA_USE_ASIO=${{ matrix.asio && 'ON' || 'OFF' }} -D PA_BUILD_SHARED_LIBS=ON
       - name: cmake build
         run: |
           cmake --build build --config Release
       - name: rename DLL
         run: |
-          mv build/Release/portaudio_*.dll libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
+          mv build/Release/portaudio.dll libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
       - name: show some information about DLL
         run: |
           ldd libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
