@@ -46,13 +46,16 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        platform: [x64, Win32]
+        platform: [x64, Win32, ARM64]
         asio: ["", "-asio"]
         include:
           - platform: x64
             platform-suffix: 64bit
           - platform: Win32
             platform-suffix: 32bit
+          - platform: ARM64
+            platform-suffix: arm64
+
     env:
       # Reproducible build by avoiding time stamp
       LDFLAGS: "/Brepro"
@@ -113,6 +116,14 @@ jobs:
         uses: actions/download-artifact@v6
         with:
           name: windows-Win32-dll-asio
+      - name: Retrieve ARM64 DLL
+        uses: actions/download-artifact@v6
+        with:
+          name: windows-ARM64-dll
+      - name: Retrieve ARM64 DLL with ASIO support
+        uses: actions/download-artifact@v6
+        with:
+          name: windows-ARM64-dll-asio
       - name: Commit and push binaries (if there are changes)
         run: |
           git config --global user.name 'github-actions[bot]'
