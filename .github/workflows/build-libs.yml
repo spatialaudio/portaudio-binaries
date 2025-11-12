@@ -37,7 +37,7 @@ jobs:
           file libportaudio.dylib
           otool -L libportaudio.dylib
       - name: upload dylib
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: macos-dylib
           path: libportaudio.dylib
@@ -82,7 +82,7 @@ jobs:
         run: |
           ldd libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
       - name: upload DLL
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: windows-${{ matrix.platform }}-dll${{ matrix.asio }}
           path: libportaudio${{ matrix.platform-suffix }}${{ matrix.asio }}.dll
